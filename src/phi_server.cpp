@@ -1,81 +1,76 @@
 #include <iostream>
-#include <vector>
-#include <string>
-#include <map>
+#include <thread>
 #include "phi_core.h"
+#include "phi_http.h"
 
-class DivineBPO {
-private:
-    PhiCore core;
-    std::map<std::string, PhiToken> sessions;
-    
-public:
-    void start() {
-        std::cout << R"(
+int main() {
+    std::cout << R"(
 +==============================================+
-|          DIVINE BPO -- CORE v1.0              |
-|   Gateway + Database + Auth + Core            |
+|          DIVINE BPO -- v1.0                   |
+|   phi-Gateway + phi-Database + phi-Auth       |
 |   90% AI | 10% Human | Unlimited Scale        |
 +==============================================+
 )" << std::endl;
+    
+    // Start HTTP server in background
+    http::PhiServer server(8092);
+    std::thread http_thread([&server]() {
+        server.start();
+    });
+    http_thread.detach();
+    
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    
+    // Run BPO core demo
+    PhiCore core;
+    
+    std::cout << "Modules: ";
+    for (const auto& m : core.modules) std::cout << m << " ";
+    std::cout << std::endl << std::endl;
+    
+    std::vector<std::pair<std::string, std::string>> tickets = {
+        {"customer_support", "Order #12345 not delivered"},
+        {"tech_support", "Login failure on mobile app"},
+        {"healthcare", "Reschedule appointment request"},
+        {"finance", "Duplicate charge on credit card"},
+        {"hr", "PTO request for March 15-18"},
+        {"sales", "Enterprise plan inquiry"},
+        {"logistics", "Shipment #9876 delayed"},
+        {"ecommerce", "Return request for item #6789"},
+        {"customer_support", "Refund status check"},
+        {"tech_support", "App crashes on startup"},
+    };
+    
+    int ai = 0, human = 0;
+    
+    std::cout << "Processing tickets..." << std::endl;
+    std::cout << "------------------------------------------------" << std::endl;
+    
+    for (const auto& [module, desc] : tickets) {
+        auto id = core.create_ticket("client_001", module, module, desc);
+        auto result = core.process_ticket(id);
+        auto ticket = core.get_ticket(id);
         
-        std::cout << "Modules loaded: ";
-        for (const auto& m : core.modules) std::cout << m << " ";
-        std::cout << std::endl << std::endl;
+        std::cout << "  " << id << " | " << module << std::endl;
+        std::cout << "    " << result << std::endl;
         
-        auto token = phi_jwt_create("client_001");
-        sessions["client_001"] = token;
-        std::cout << "[OK] Client authenticated: JWT issued" << std::endl;
-        
-        std::vector<std::pair<std::string, std::string>> test_tickets = {
-            {"customer_support", "My order #12345 has not arrived"},
-            {"tech_support", "Cannot login to my account"},
-            {"healthcare", "Need to reschedule appointment"},
-            {"finance", "Incorrect charge on my credit card"},
-            {"hr", "PTO request for next week"},
-            {"sales", "Interested in enterprise plan"},
-            {"logistics", "Shipment delayed by 3 days"},
-            {"ecommerce", "Return request for item #6789"},
-            {"customer_support", "Refund not processed"},
-            {"tech_support", "App crashes on startup"},
-        };
-        
-        int ai_count = 0, human_count = 0;
-        
-        std::cout << std::endl << "Processing tickets..." << std::endl;
-        std::cout << "------------------------------------------------" << std::endl;
-        
-        for (const auto& [module, desc] : test_tickets) {
-            auto ticket_id = core.create_ticket("client_001", module, module, desc);
-            auto result = core.process_ticket(ticket_id);
-            auto ticket = core.get_ticket(ticket_id);
-            
-            std::cout << "  " << ticket_id << " | " << module << std::endl;
-            std::cout << "    " << result << std::endl;
-            
-            if (ticket->needs_human) human_count++;
-            else ai_count++;
-        }
-        
-        std::cout << "------------------------------------------------" << std::endl;
-        std::cout << std::endl;
-        
-        double ai_pct = ai_count * 100.0 / (ai_count + human_count);
-        
-        std::cout << "+==============================================+" << std::endl;
-        std::cout << "|   RESULTS                                     |" << std::endl;
-        std::cout << "|   Total tickets: " << (ai_count + human_count) << "                            |" << std::endl;
-        std::cout << "|   AI handled:    " << ai_count << "                            |" << std::endl;
-        std::cout << "|   Human escalated: " << human_count << "                           |" << std::endl;
-        std::cout << "|   AI rate: " << ai_pct << "%                                |" << std::endl;
-        std::cout << "|                                               |" << std::endl;
-        std::cout << "|   Divine BPO: READY FOR CLIENTS               |" << std::endl;
-        std::cout << "+==============================================+" << std::endl;
+        if (ticket->needs_human) human++; else ai++;
     }
-};
-
-int main() {
-    DivineBPO bpo;
-    bpo.start();
+    
+    std::cout << "------------------------------------------------" << std::endl;
+    std::cout << std::endl;
+    std::cout << "Results: " << ai << " AI | " << human << " Human | " 
+              << (ai * 100.0 / (ai + human)) << "% AI" << std::endl;
+    std::cout << std::endl;
+    std::cout << "Dashboard: http://localhost:8092" << std::endl;
+    std::cout << "API:       http://localhost:8092/api/metrics" << std::endl;
+    std::cout << std::endl;
+    std::cout << "Press Ctrl+C to stop" << std::endl;
+    
+    // Keep running
+    while (true) {
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+    }
+    
     return 0;
 }
