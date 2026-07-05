@@ -4,7 +4,7 @@
 #pragma once
 #include <cmath>
 
-namespace phi {
+namespace divine {
 
 constexpr double PHI        = 1.6180339887498948482;
 constexpr double PHI_INV    = 0.6180339887498948482;
@@ -20,4 +20,4 @@ inline size_t phi_probe(size_t i, size_t capacity) {
     return static_cast<size_t>(i * PHI_INV * capacity) % capacity;
 }
 
-} // namespace phi
+} // namespace divine
