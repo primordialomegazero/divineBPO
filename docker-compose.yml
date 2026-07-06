@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  divine-bpo:
+    build: .
+    ports:
+      - "8092:8092"
+      - "8093:8093"
+    volumes:
+      - ollama_data:/root/.ollama
+    restart: unless-stopped
+
+volumes:
+  ollama_data:
