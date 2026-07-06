@@ -1,0 +1,87 @@
+{
+  "info": {
+    "name": "Divine BPO v15.0",
+    "description": "Production-ready BPO platform with AI swarm, GRC blockchain, homomorphic encryption, and real-time WebSocket.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:8092" },
+    { "key": "ws_url", "value": "ws://localhost:8093" }
+  ],
+  "item": [
+    {
+      "name": "System",
+      "item": [
+        {
+          "name": "Get Metrics",
+          "request": { "method": "GET", "url": "{{base_url}}/api/metrics", "description": "Real-time system metrics" }
+        },
+        {
+          "name": "Get Info",
+          "request": { "method": "GET", "url": "{{base_url}}/api/info", "description": "System information" }
+        },
+        {
+          "name": "Health Check",
+          "request": { "method": "GET", "url": "{{base_url}}/health", "description": "Health check endpoint" }
+        }
+      ]
+    },
+    {
+      "name": "Tickets",
+      "item": [
+        {
+          "name": "Create Ticket",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/tickets",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"module\":\"customer_support\",\"description\":\"Refund for damaged order\"}"
+            }
+          }
+        },
+        {
+          "name": "Get Ticket",
+          "request": { "method": "GET", "url": "{{base_url}}/api/tickets/:id" }
+        }
+      ]
+    },
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/auth/login",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": { "mode": "raw", "raw": "{\"username\":\"admin\"}" }
+          }
+        },
+        {
+          "name": "Validate Token",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/auth/validate",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": { "mode": "raw", "raw": "{\"token\":\"phi-sess-...\"}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "GRC Coin",
+      "item": [
+        {
+          "name": "Get GRC Status",
+          "request": { "method": "GET", "url": "{{base_url}}/api/grc/status" }
+        },
+        {
+          "name": "Get Balance",
+          "request": { "method": "GET", "url": "{{base_url}}/api/grc/balance/:address" }
+        }
+      ]
+    }
+  ]
+}

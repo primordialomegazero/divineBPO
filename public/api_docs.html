@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Divine BPO — API Documentation v15.0</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500&display=swap');
+  :root {
+    --bg: #0a0a0f; --surface: rgba(255,255,255,0.03); --border: rgba(255,255,255,0.06);
+    --text: rgba(255,255,255,0.82); --muted: rgba(255,255,255,0.45); --accent: rgba(255,255,255,0.12);
+    --font: 'Inter', sans-serif; --display: 'Bebas Neue', sans-serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--text); font-family: var(--font); font-weight: 300; font-size: 14px; line-height: 1.618; padding: 40px; max-width: 900px; margin: 0 auto; }
+  h1 { font-family: var(--display); font-size: 36px; letter-spacing: 0.04em; margin-bottom: 8px; }
+  h2 { font-family: var(--display); font-size: 24px; letter-spacing: 0.03em; margin: 40px 0 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+  h3 { font-size: 14px; font-weight: 500; margin: 24px 0 8px; color: var(--text); }
+  .subtitle { color: var(--muted); font-size: 13px; margin-bottom: 32px; }
+  .endpoint { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin-bottom: 16px; }
+  .method { display: inline-block; padding: 3px 10px; border-radius: 4px; font-size: 11px; font-weight: 500; letter-spacing: 0.05em; margin-right: 10px; }
+  .get { background: rgba(255,255,255,0.08); color: var(--text); }
+  .post { background: rgba(255,255,255,0.12); color: var(--text); }
+  .path { font-family: monospace; font-size: 15px; }
+  .desc { color: var(--muted); font-size: 13px; margin: 8px 0 0; }
+  pre { background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 4px; padding: 12px; font-family: monospace; font-size: 12px; overflow-x: auto; margin: 12px 0 0; color: var(--muted); }
+  code { color: var(--text); }
+  .status { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; margin-left: 8px; }
+  .ok { background: rgba(255,255,255,0.06); color: var(--muted); }
+  .footer { margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border); color: var(--muted); font-size: 12px; }
+</style>
+</head>
+<body>
+
+<h1>Divine BPO API</h1>
+<p class="subtitle">v15.0 — Production-Ready | phi-Harmonic Architecture | 90% AI, 10% Human</p>
+
+<h2>System</h2>
+
+<div class="endpoint">
+  <span class="method get">GET</span><span class="path">/api/metrics</span>
+  <p class="desc">Real-time system metrics. Lambda, phi constant, active modules, ticket counts.</p>
+  <pre>curl http://localhost:8092/api/metrics
+→ {"total_tickets":24,"ai_handled":21,"human_escalated":3,"ai_rate":87.5,"modules_active":14,"lambda":0.4812}</pre>
+</div>
+
+<div class="endpoint">
+  <span class="method get">GET</span><span class="path">/api/info</span>
+  <p class="desc">System information. Version, status, phi constant.</p>
+  <pre>curl http://localhost:8092/api/info
+→ {"name":"Divine BPO","version":"15.0","phi":1.6180339887498948482,"status":"operational"}</pre>
+</div>
+
+<div class="endpoint">
+  <span class="method get">GET</span><span class="path">/health</span>
+  <p class="desc">Health check endpoint. Returns 200 if all systems operational.</p>
+  <pre>curl http://localhost:8092/health
+→ {"status":"phi-operational","lambda":0.4812}</pre>
+</div>
+
+<h2>Tickets</h2>
+
+<div class="endpoint">
+  <span class="method post">POST</span><span class="path">/api/tickets</span>
+  <p class="desc">Create a new ticket. AI auto-classifies module and processes. ~10% escalate to human.</p>
+  <pre>curl -X POST http://localhost:8092/api/tickets \
+  -H "Content-Type: application/json" \
+  -d '{"module":"customer_support","description":"Refund for damaged order"}'
+→ {"ticket_id":"TKT-...","status":"ai_resolved","response":"I am happy to assist..."}</pre>
+</div>
+
+<div class="endpoint">
+  <span class="method get">GET</span><span class="path">/api/tickets/:id</span>
+  <p class="desc">Get ticket by ID. Returns full ticket details including AI response.</p>
+  <pre>curl http://localhost:8092/api/tickets/TKT-1783380485850448060
+→ {"id":"TKT-...","module":"customer_support","status":"ai_resolved","resolution":"..."}</pre>
+</div>
+
+<h2>Authentication</h2>
+
+<div class="endpoint">
+  <span class="method post">POST</span><span class="path">/api/auth/login</span>
+  <p class="desc">Authenticate and receive session token. Valid for 24 hours.</p>
+  <pre>curl -X POST http://localhost:8092/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"username":"admin"}'
+→ {"token":"phi-sess-...","expires_at":1783472000}</pre>
+</div>
+
+<div class="endpoint">
+  <span class="method post">POST</span><span class="path">/api/auth/validate</span>
+  <p class="desc">Validate a session token.</p>
+  <pre>curl -X POST http://localhost:8092/api/auth/validate \
+  -H "Content-Type: application/json" \
+  -d '{"token":"phi-sess-..."}'
+→ {"valid":true,"user":"admin"}</pre>
+</div>
+
+<h2>GRC Coin</h2>
+
+<div class="endpoint">
+  <span class="method get">GET</span><span class="path">/api/grc/status</span>
+  <p class="desc">GRC blockchain status. Total supply, chain length, verification.</p>
+  <pre>curl http://localhost:8092/api/grc/status
+→ {"total_supply":2618034,"chain_length":9,"verified":true,"block_time_ms":1618}</pre>
+</div>
+
+<div class="endpoint">
+  <span class="method get">GET</span><span class="path">/api/grc/balance/:address</span>
+  <p class="desc">Get GRC wallet balance.</p>
+  <pre>curl http://localhost:8092/api/grc/balance/GRC-1234...
+→ {"address":"GRC-1234...","balance":490}</pre>
+</div>
+
+<h2>WebSocket</h2>
+
+<div class="endpoint">
+  <span class="method get">GET</span><span class="path">ws://localhost:8093</span>
+  <p class="desc">Real-time event stream. Receives ticket updates, system alerts.</p>
+  <pre>const ws = new WebSocket('ws://localhost:8093');
+ws.onmessage = (e) => {
+  const msg = JSON.parse(e.data);
+  // msg.type: "ticket_update", "connected", "alert"
+  // msg.data: { ticket_id, status, module }
+};</pre>
+</div>
+
+<h2>Modules</h2>
+<p class="desc" style="margin-top:8px">
+  <code>customer_support</code> <code>tech_support</code> <code>healthcare</code> 
+  <code>finance</code> <code>hr</code> <code>sales</code> <code>logistics</code> 
+  <code>ecommerce</code> <code>legal</code> <code>telco</code> <code>travel</code> 
+  <code>hospitality</code> <code>education</code> <code>real_estate</code> <code>insurance</code>
+</p>
+
+<div class="footer">
+  Divine BPO v15.0 | phi-Harmonic Architecture | MIT License | 
+  <a href="https://github.com/primordialomegazero/divineBPO" style="color:var(--muted)">GitHub</a>
+</div>
+
+</body>
+</html>
