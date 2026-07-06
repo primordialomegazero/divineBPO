@@ -24,3 +24,20 @@
 [2026-07-07 07:37:27.550] [INFO ] All systems operational. Press Ctrl+C to stop.
 [2026-07-07 07:38:16.629] [INFO ] ══════ SHUTDOWN ══════
 [2026-07-07 07:38:16.649] [INFO ] Stopped. Data persisted. Backups saved.
+[2026-07-07 07:55:50.023] [INFO ] ══════ DIVINE BPO v18.0 — FULL INFRASTRUCTURE ══════
+[2026-07-07 07:56:21.129] [INFO ] Redis: AVAILABLE
+[2026-07-07 07:56:21.129] [INFO ] RabbitMQ: AVAILABLE
+[2026-07-07 07:56:21.129] [INFO ] NGINX: Configured in nginx_divine.conf
+[2026-07-07 07:56:21.129] [INFO ] Prometheus: Configured in prometheus.yml
+[2026-07-07 07:56:21.130] [INFO ] Grafana: Install and add Prometheus datasource on :3000
+[2026-07-07 07:56:21.599] [INFO ] ══════ PROCESSING TICKETS (with Redis + MQ) ══════
+[2026-07-07 07:57:29.030] [INFO ] ══════ INFRASTRUCTURE STATUS ══════
+[2026-07-07 07:57:29.030] [INFO ] SQLite: 46 tickets
+[2026-07-07 07:57:29.030] [INFO ] Redis: CONNECTED
+[2026-07-07 07:57:29.031] [INFO ] RabbitMQ: CONNECTED
+[2026-07-07 07:57:29.031] [INFO ] Prometheus: http://localhost:8092/metrics
+[2026-07-07 07:57:29.031] [INFO ] Grafana: http://localhost:3000 (admin/admin)
+[2026-07-07 07:57:29.031] [INFO ] NGINX: sudo ln -s nginx_divine.conf /etc/nginx/sites-enabled/
+[2026-07-07 07:57:29.031] [INFO ] ══════ RUNNING ══════
+[2026-07-07 07:57:29.031] [INFO ] ══════ SHUTDOWN ══════
+[2026-07-07 07:57:29.033] [INFO ] Stopped. All systems saved.
