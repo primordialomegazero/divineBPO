@@ -6,6 +6,7 @@
 #include <thread>
 #include <chrono>
 #include <ctime>
+#include <cstdio>
 
 #ifdef __linux__
 #include <sys/socket.h>
@@ -27,6 +28,9 @@ struct Metrics {
     int db_tickets = 0, grc_blocks = 0, backups = 0;
     bool redis_ok = false, rabbitmq_ok = false;
     int swarm_cores = 0, uptime_seconds = 0;
+    bool pqc_ok = false;
+    std::string pqc_algorithm = "None";
+    int pqc_security_bits = 0;
     std::string status = "operational";
 };
 
@@ -56,51 +60,41 @@ class PhiServer {
     }
 
     std::string handle_api(const std::string& path) {
-        char buf[2048];
+        char buf[3072];
         
         if (path == "/api/health") {
-            snprintf(buf, sizeof(buf), "{\"status\":\"%s\",\"uptime\":%d,\"version\":\"21.0\"}", g_metrics.status.c_str(), g_metrics.uptime_seconds);
+            snprintf(buf, sizeof(buf), "{\"status\":\"%s\",\"pqc\":\"%s\",\"uptime\":%d,\"version\":\"22.0\"}", 
+                     g_metrics.status.c_str(), g_metrics.pqc_algorithm.c_str(), g_metrics.uptime_seconds);
             return ok_json(buf);
         }
 
         if (path == "/api/stats") {
             snprintf(buf, sizeof(buf),
                 "{"
-                "\"total_tickets\":%d,"
-                "\"ai_handled\":%d,"
-                "\"human_escalated\":%d,"
-                "\"ai_rate\":%.1f,"
-                "\"modules_active\":%d,"
-                "\"lambda\":%.4f,"
-                "\"phi\":%.4f,"
-                "\"db_tickets\":%d,"
-                "\"grc_blocks\":%d,"
-                "\"backups\":%d,"
-                "\"redis_ok\":%s,"
-                "\"rabbitmq_ok\":%s,"
-                "\"swarm_cores\":%d,"
+                "\"total_tickets\":%d,\"ai_handled\":%d,\"human_escalated\":%d,"
+                "\"ai_rate\":%.1f,\"modules_active\":%d,"
+                "\"lambda\":%.4f,\"phi\":%.4f,"
+                "\"db_tickets\":%d,\"grc_blocks\":%d,\"backups\":%d,"
+                "\"redis_ok\":%s,\"rabbitmq_ok\":%s,\"swarm_cores\":%d,"
+                "\"pqc_secured\":%s,\"pqc_algorithm\":\"%s\",\"pqc_bits\":%d,"
                 "\"uptime\":%d"
                 "}",
                 g_metrics.total_tickets, g_metrics.ai_handled, g_metrics.human_escalated,
                 g_metrics.ai_rate, g_metrics.modules_active, g_metrics.lambda, g_metrics.phi,
                 g_metrics.db_tickets, g_metrics.grc_blocks, g_metrics.backups,
                 g_metrics.redis_ok ? "true" : "false", g_metrics.rabbitmq_ok ? "true" : "false",
-                g_metrics.swarm_cores, g_metrics.uptime_seconds);
+                g_metrics.swarm_cores,
+                g_metrics.pqc_ok ? "true" : "false", g_metrics.pqc_algorithm.c_str(), g_metrics.pqc_security_bits,
+                g_metrics.uptime_seconds);
             return ok_json(buf);
         }
 
         if (path == "/api/infra") {
             snprintf(buf, sizeof(buf),
-                "{"
-                "\"redis\":%s,"
-                "\"rabbitmq\":%s,"
-                "\"swarm_cores\":%d,"
-                "\"grc_blocks\":%d,"
-                "\"backups\":%d,"
-                "\"uptime\":%d"
-                "}",
+                "{\"redis\":%s,\"rabbitmq\":%s,\"swarm_cores\":%d,\"grc_blocks\":%d,\"backups\":%d,\"pqc\":\"%s\",\"uptime\":%d}",
                 g_metrics.redis_ok ? "true" : "false", g_metrics.rabbitmq_ok ? "true" : "false",
-                g_metrics.swarm_cores, g_metrics.grc_blocks, g_metrics.backups, g_metrics.uptime_seconds);
+                g_metrics.swarm_cores, g_metrics.grc_blocks, g_metrics.backups,
+                g_metrics.pqc_algorithm.c_str(), g_metrics.uptime_seconds);
             return ok_json(buf);
         }
 
@@ -159,9 +153,9 @@ public:
             sockaddr_in ca{}; socklen_t cl = sizeof(ca);
             SOCKET cf = accept(server_fd, (sockaddr*)&ca, &cl);
             if (cf == INVALID_SOCKET) continue;
-            char buf[8192] = {0};
-            recv(cf, buf, sizeof(buf)-1, 0);
-            std::string r = handle_request(std::string(buf));
+            char request_buf[8192] = {0};
+            recv(cf, request_buf, sizeof(request_buf)-1, 0);
+            std::string r = handle_request(std::string(request_buf));
             send(cf, r.c_str(), r.size(), 0);
             CLOSE_SOCKET(cf);
         }
