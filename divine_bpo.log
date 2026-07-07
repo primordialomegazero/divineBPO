@@ -131,3 +131,39 @@
 [2026-07-08 00:31:46.273] [INFO ] DB Pool: 8 connections
 [2026-07-08 00:31:46.274] [INFO ] Cache: Redis
 [2026-07-08 00:31:46.274] [INFO ] Rate Limit: 100 req/s/IP
+[2026-07-08 01:20:52.863] [INFO ] ══════ DIVINE BPO v23.2 — AGI VOICE (TWILIO LIVE) ══════
+[2026-07-08 01:20:52.878] [INFO ] ThreadPool: 48 workers
+[2026-07-08 01:20:52.885] [INFO ] DB Pool: 8 connections | 76 tickets
+[2026-07-08 01:20:52.916] [INFO ] Cache: Redis
+[2026-07-08 01:20:52.916] [INFO ] Rate Limit: 100 req/s/IP
+[2026-07-08 01:20:52.916] [INFO ] Voice: Twilio ready
+[2026-07-08 01:20:52.916] [INFO ] Call Queue: 500 max | Priority-based
+[2026-07-08 01:20:52.916] [INFO ] I18N: EN/ES/FR/JA/TL ready
+[2026-07-08 01:20:56.254] [INFO ] ══════ AGI VOICE READY ══════
+[2026-07-08 01:20:56.254] [INFO ] Dashboard: http://localhost:8092
+[2026-07-08 01:20:56.254] [INFO ] Voice Webhook: http://localhost:8092/api/voice/incoming
+[2026-07-08 01:20:56.254] [INFO ] Call Queue: 500 max, priority-based
+[2026-07-08 01:20:56.255] [INFO ] Languages: EN, ES, FR, JA, TL
+[2026-07-08 01:20:56.255] [INFO ] PQC: Kyber1024
+[2026-07-08 01:21:11.052] [INFO ] ══════ DIVINE BPO v23.2 — AGI VOICE (TWILIO LIVE) ══════
+[2026-07-08 01:21:11.069] [INFO ] ThreadPool: 48 workers
+[2026-07-08 01:21:11.084] [INFO ] DB Pool: 8 connections | 76 tickets
+[2026-07-08 01:21:11.291] [INFO ] Cache: Redis
+[2026-07-08 01:21:11.291] [INFO ] Rate Limit: 100 req/s/IP
+[2026-07-08 01:21:11.291] [INFO ] Voice: Twilio ready
+[2026-07-08 01:21:11.292] [INFO ] Call Queue: 500 max | Priority-based
+[2026-07-08 01:21:11.292] [INFO ] I18N: EN/ES/FR/JA/TL ready
+[2026-07-08 01:21:54.420] [INFO ] ══════ DIVINE BPO v23.2 — AGI VOICE (TWILIO LIVE) ══════
+[2026-07-08 01:21:54.433] [INFO ] ThreadPool: 48 workers
+[2026-07-08 01:21:54.439] [INFO ] DB Pool: 8 connections | 76 tickets
+[2026-07-08 01:21:54.457] [INFO ] Cache: Redis
+[2026-07-08 01:21:54.457] [INFO ] Rate Limit: 100 req/s/IP
+[2026-07-08 01:21:54.457] [INFO ] Voice: Twilio ready
+[2026-07-08 01:21:54.457] [INFO ] Call Queue: 500 max | Priority-based
+[2026-07-08 01:21:54.457] [INFO ] I18N: EN/ES/FR/JA/TL ready
+[2026-07-08 01:21:57.560] [INFO ] ══════ AGI VOICE READY ══════
+[2026-07-08 01:21:57.560] [INFO ] Dashboard: http://localhost:8092
+[2026-07-08 01:21:57.560] [INFO ] Voice Webhook: http://localhost:8092/api/voice/incoming
+[2026-07-08 01:21:57.560] [INFO ] Call Queue: 500 max, priority-based
+[2026-07-08 01:21:57.560] [INFO ] Languages: EN, ES, FR, JA, TL
+[2026-07-08 01:21:57.560] [INFO ] PQC: Kyber1024
