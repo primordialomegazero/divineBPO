@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Divine BPO</title>
+  <link rel="stylesheet" href="css/phi.css">
+</head>
+<body>
+
+<div class="grid">
+  
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="logo">DIVINE<span>BPO</span></div>
+    <nav class="nav">
+      <a href="#" class="active">Overview</a>
+      <a href="#">Tickets</a>
+      <a href="#">Analytics</a>
+      <a href="#">Modules</a>
+      <a href="#">Settings</a>
+    </nav>
+    <div class="phi-indicator" style="margin-top: auto;">
+      <span class="phi-dot"></span>
+      SYSTEM OPERATIONAL
+    </div>
+  </aside>
+  
+  <!-- MAIN -->
+  <main class="main">
+    <div class="header">Overview</div>
+    <div class="subheader">Real-time BPO metrics. AI-driven. Human-verified.</div>
+    
+    <!-- METRICS -->
+    <div class="metric-row">
+      <div class="metric">
+        <div class="metric-label">Lambda</div>
+        <div class="metric-value" id="metric-lambda">0.4812</div>
+        <div class="metric-phi">Target: ln(phi)</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Phi</div>
+        <div class="metric-value" id="metric-phi">1.6180</div>
+        <div class="metric-phi">Golden Ratio</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Active Modules</div>
+        <div class="metric-value" id="metric-modules">14</div>
+        <div class="metric-phi">Customer Support, Tech, Healthcare...</div>
+      </div>
+    </div>
+    
+    <!-- CARDS -->
+    <div class="cards">
+      <div class="card" id="card-total">
+        <div class="card-label">Total Tickets</div>
+        <div class="card-value">10</div>
+        <div class="card-sub">Across all modules</div>
+      </div>
+      <div class="card" id="card-ai">
+        <div class="card-label">AI Handled</div>
+        <div class="card-value">7</div>
+        <div class="card-sub">Fully automated</div>
+      </div>
+      <div class="card" id="card-human">
+        <div class="card-label">Human Escalated</div>
+        <div class="card-value">3</div>
+        <div class="card-sub">Complex cases only</div>
+      </div>
+      <div class="card" id="card-rate">
+        <div class="card-label">AI Rate</div>
+        <div class="card-value">70%</div>
+        <div class="card-sub">phi-target: 90%</div>
+      </div>
+    </div>
+    
+    <!-- TICKETS TABLE -->
+    <div class="table-container">
+      <div class="table-header">
+        <div>ID</div>
+        <div>Module</div>
+        <div>Subject</div>
+        <div>Handler</div>
+        <div>Status</div>
+      </div>
+      <div id="ticket-table">
+        <div class="table-row">
+          <div>TKT-1</div><div>customer_support</div>
+          <div>Order #12345</div>
+          <div><span class="status status-human">HUMAN</span></div>
+          <div><span class="status status-open">OPEN</span></div>
+        </div>
+        <div class="table-row">
+          <div>TKT-2</div><div>tech_support</div>
+          <div>Login issue</div>
+          <div><span class="status status-ai">AI</span></div>
+          <div><span class="status status-ai">CLOSED</span></div>
+        </div>
+        <div class="table-row">
+          <div>TKT-3</div><div>healthcare</div>
+          <div>Reschedule appointment</div>
+          <div><span class="status status-ai">AI</span></div>
+          <div><span class="status status-ai">CLOSED</span></div>
+        </div>
+        <div class="table-row">
+          <div>TKT-4</div><div>finance</div>
+          <div>Incorrect charge</div>
+          <div><span class="status status-human">HUMAN</span></div>
+          <div><span class="status status-open">OPEN</span></div>
+        </div>
+        <div class="table-row">
+          <div>TKT-5</div><div>hr</div>
+          <div>PTO request</div>
+          <div><span class="status status-human">HUMAN</span></div>
+          <div><span class="status status-open">OPEN</span></div>
+        </div>
+      </div>
+    </div>
+    
+  </main>
+</div>
+
+<script src="js/phi.js"></script>
+</body>
+</html>

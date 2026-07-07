@@ -1,72 +1,97 @@
-// Divine BPO v21.0 — Enterprise Dashboard
-// Real-time data via REST API + WebSocket
+// Divine BPO v22.0 — PQC Enterprise Dashboard
+// Full dynamic: REST API + WebSocket + Live Tickets
 
 const API = '/api/stats';
+const TICKETS_API = '/api/tickets';
 const INFRA = '/api/infra';
 const WS_URL = `ws://${location.hostname}:8093`;
 
 let ws = null;
 
-// Fetch stats from API
 async function fetchStats() {
   try {
     const res = await fetch(API);
     const data = await res.json();
     updateDashboard(data);
-  } catch (e) {
-    console.error('Stats fetch error:', e);
-  }
+  } catch (e) { console.error('Stats:', e); }
 }
 
-// Fetch infra status
+async function fetchTickets() {
+  try {
+    const res = await fetch(TICKETS_API);
+    const tickets = await res.json();
+    updateTickets(tickets);
+  } catch (e) { console.error('Tickets:', e); }
+}
+
 async function fetchInfra() {
   try {
     const res = await fetch(INFRA);
     const data = await res.json();
     updateInfra(data);
-  } catch (e) {
-    console.error('Infra fetch error:', e);
-  }
+  } catch (e) { console.error('Infra:', e); }
 }
 
-// Update all dashboard elements
 function updateDashboard(data) {
-  // Metrics
   setValue('metric-lambda', data.lambda?.toFixed(4) || '0.4812');
   setValue('metric-phi', data.phi?.toFixed(4) || '1.6180');
   setValue('metric-modules', data.modules_active || 14);
-
-  // Cards
   setValue('card-total-value', data.total_tickets || 0);
   setValue('card-ai-value', data.ai_handled || 0);
   setValue('card-human-value', data.human_escalated || 0);
   setValue('card-rate-value', (data.ai_rate || 0) + '%');
   setValue('card-db-value', data.db_tickets || 0);
 
-  // Infra (also from stats)
+  // PQC Status
+  if (data.pqc_secured !== undefined) {
+    const pqcEl = document.getElementById('card-pqc-value');
+    if (pqcEl) {
+      pqcEl.textContent = data.pqc_secured ? '🔒 SECURE' : '⚠️ DISABLED';
+      pqcEl.style.color = data.pqc_secured ? 'var(--green)' : 'var(--red)';
+    }
+    const pqcAlg = document.getElementById('card-pqc-algo');
+    if (pqcAlg) pqcAlg.textContent = data.pqc_algorithm + ' (' + data.pqc_bits + '-bit)';
+  }
+
   updateInfra(data);
 }
 
 function updateInfra(data) {
-  if (data.redis_ok !== undefined) {
-    setInfra('infra-redis', data.redis_ok);
-  }
-  if (data.rabbitmq_ok !== undefined) {
-    setInfra('infra-rabbitmq', data.rabbitmq_ok);
-  }
+  if (data.redis_ok !== undefined) setInfra('infra-redis', data.redis_ok);
+  if (data.rabbitmq_ok !== undefined) setInfra('infra-rabbitmq', data.rabbitmq_ok);
   if (data.swarm_cores !== undefined) {
-    document.getElementById('infra-swarm').textContent = data.swarm_cores + ' cores';
-    document.getElementById('infra-swarm').className = 'infra-status ' + (data.swarm_cores > 0 ? 'infra-up' : 'infra-down');
+    const el = document.getElementById('infra-swarm');
+    if (el) { el.textContent = data.swarm_cores + ' cores'; el.className = 'infra-status ' + (data.swarm_cores > 0 ? 'infra-up' : 'infra-down'); }
   }
   if (data.grc_blocks !== undefined) {
-    document.getElementById('infra-grc').textContent = data.grc_blocks + ' blocks';
+    const el = document.getElementById('infra-grc');
+    if (el) el.textContent = data.grc_blocks + ' blocks';
   }
   if (data.backups !== undefined) {
-    document.getElementById('infra-backups').textContent = data.backups + ' saved';
+    const el = document.getElementById('infra-backups');
+    if (el) el.textContent = data.backups + ' saved';
   }
   if (data.uptime !== undefined) {
-    document.getElementById('infra-uptime').textContent = formatUptime(data.uptime);
+    const el = document.getElementById('infra-uptime');
+    if (el) el.textContent = formatUptime(data.uptime);
   }
+}
+
+function updateTickets(tickets) {
+  const table = document.getElementById('ticket-table');
+  if (!table || !tickets.length) return;
+
+  let html = '';
+  tickets.forEach(t => {
+    html += `<div class="table-row">
+      <div>${t.id}</div>
+      <div>${t.module}</div>
+      <div>${t.subject}</div>
+      <div><span class="status-${t.handler === 'AI' ? 'ai' : 'human'}">${t.handler}</span></div>
+      <div><span class="status-${t.status === 'CLOSED' ? 'closed' : 'open'}">${t.status}</span></div>
+    </div>`;
+  });
+  table.innerHTML = html;
 }
 
 function setValue(id, value) {
@@ -93,29 +118,28 @@ function formatUptime(seconds) {
   return h > 0 ? `${h}h ${m}m` : `${m}m ${s}s`;
 }
 
-// WebSocket for real-time updates
 function connectWebSocket() {
   try {
     ws = new WebSocket(WS_URL);
-    ws.onopen = () => console.log('WS connected');
+    ws.onopen = () => console.log('WS live');
     ws.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
         updateDashboard(data);
+        fetchTickets();
       } catch (e) {}
     };
-    ws.onclose = () => { console.log('WS closed, retrying in 5s...'); setTimeout(connectWebSocket, 5000); };
+    ws.onclose = () => setTimeout(connectWebSocket, 5000);
     ws.onerror = () => ws.close();
-  } catch (e) {
-    console.log('WS unavailable, using polling');
-  }
+  } catch (e) {}
 }
 
-// Init
 document.addEventListener('DOMContentLoaded', () => {
   fetchStats();
+  fetchTickets();
   fetchInfra();
   connectWebSocket();
   setInterval(fetchStats, 10000);
-  setInterval(fetchInfra, 30000);
+  setInterval(fetchTickets, 30000);
+  setInterval(fetchInfra, 60000);
 });

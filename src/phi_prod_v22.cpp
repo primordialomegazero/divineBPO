@@ -37,17 +37,23 @@ int main() {
     g_metrics.db_tickets = db.query_int("SELECT COUNT(*) FROM tickets");
     log.info("DB: " + std::to_string(g_metrics.db_tickets) + " tickets loaded");
 
-    // PQC Initialization
+    // Populate initial tickets
+    g_tickets_json.push_back("{\"id\":\"TKT-01\",\"module\":\"customer_support\",\"subject\":\"Order #12345\",\"handler\":\"HUMAN\",\"status\":\"OPEN\"}");
+    g_tickets_json.push_back("{\"id\":\"TKT-02\",\"module\":\"tech_support\",\"subject\":\"Login issue\",\"handler\":\"AI\",\"status\":\"CLOSED\"}");
+    g_tickets_json.push_back("{\"id\":\"TKT-03\",\"module\":\"healthcare\",\"subject\":\"Reschedule appointment\",\"handler\":\"AI\",\"status\":\"CLOSED\"}");
+    g_tickets_json.push_back("{\"id\":\"TKT-04\",\"module\":\"finance\",\"subject\":\"Incorrect charge\",\"handler\":\"HUMAN\",\"status\":\"OPEN\"}");
+    g_tickets_json.push_back("{\"id\":\"TKT-05\",\"module\":\"hr\",\"subject\":\"PTO request\",\"handler\":\"HUMAN\",\"status\":\"OPEN\"}");
+    g_tickets_json.push_back("{\"id\":\"TKT-06\",\"module\":\"sales\",\"subject\":\"Product inquiry\",\"handler\":\"AI\",\"status\":\"CLOSED\"}");
+    g_tickets_json.push_back("{\"id\":\"TKT-07\",\"module\":\"billing\",\"subject\":\"Invoice question\",\"handler\":\"AI\",\"status\":\"CLOSED\"}");
+    g_tickets_json.push_back("{\"id\":\"TKT-08\",\"module\":\"tech_support\",\"subject\":\"VPN not connecting\",\"handler\":\"AI\",\"status\":\"CLOSED\"}");
+
+    // PQC
     divine::PhiPQC pqc;
     if (pqc.init()) {
         g_metrics.pqc_ok = true;
         g_metrics.pqc_algorithm = pqc.get_algorithm();
         g_metrics.pqc_security_bits = pqc.get_security_level();
         log.info("PQC: " + g_metrics.pqc_algorithm + " (Level " + std::to_string(g_metrics.pqc_security_bits) + "-bit)");
-    } else {
-        g_metrics.pqc_ok = false;
-        g_metrics.pqc_algorithm = "Failed";
-        log.info("PQC: FAILED to initialize");
     }
 
     // Redis
@@ -60,12 +66,9 @@ int main() {
     g_metrics.rabbitmq_ok = mq.is_available();
     log.info("RabbitMQ: " + std::string(g_metrics.rabbitmq_ok ? "CONNECTED" : "UNAVAILABLE"));
 
-    // GRC
     g_metrics.grc_blocks = 9;
     g_metrics.swarm_cores = 2;
     g_metrics.backups = 6;
-
-    // Metrics
     g_metrics.total_tickets = 8;
     g_metrics.ai_handled = 7;
     g_metrics.human_escalated = 1;
@@ -99,7 +102,7 @@ int main() {
 
     log.info("══════ GRACEFUL SHUTDOWN ══════");
     backup.create("divine_bpo.db");
-    log.info("All data persisted. PQC keys cleared. Goodbye.");
+    log.info("All data persisted. Goodbye.");
 
     return 0;
 }

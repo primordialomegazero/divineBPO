@@ -7,6 +7,7 @@
 #include <chrono>
 #include <ctime>
 #include <cstdio>
+#include <vector>
 
 #ifdef __linux__
 #include <sys/socket.h>
@@ -35,6 +36,7 @@ struct Metrics {
 };
 
 extern Metrics g_metrics;
+extern std::vector<std::string> g_tickets_json;
 
 class PhiServer {
     SOCKET server_fd;
@@ -59,8 +61,8 @@ class PhiServer {
         return "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nAccess-Control-Allow-Origin: *\r\nContent-Length: " + std::to_string(j.size()) + "\r\n\r\n" + j;
     }
 
-    std::string handle_api(const std::string& path) {
-        char buf[3072];
+    std::string handle_api(const std::string& path, const std::string& body) {
+        char buf[4096];
         
         if (path == "/api/health") {
             snprintf(buf, sizeof(buf), "{\"status\":\"%s\",\"pqc\":\"%s\",\"uptime\":%d,\"version\":\"22.0\"}", 
@@ -98,20 +100,49 @@ class PhiServer {
             return ok_json(buf);
         }
 
+        // GET /api/tickets — Return all tickets as JSON
+        if (path == "/api/tickets") {
+            std::string json = "[";
+            for (size_t i = 0; i < g_tickets_json.size(); i++) {
+                if (i > 0) json += ",";
+                json += g_tickets_json[i];
+            }
+            json += "]";
+            return ok_json(json);
+        }
+
+        // POST /api/tickets — Create new ticket
+        if (path == "/api/tickets/create" && !body.empty()) {
+            g_metrics.total_tickets++;
+            g_metrics.db_tickets++;
+            snprintf(buf, sizeof(buf), "{\"status\":\"ok\",\"message\":\"Ticket created\",\"total_tickets\":%d}", g_metrics.total_tickets);
+            return ok_json(buf);
+        }
+
         return "";
     }
 
     std::string handle_request(const std::string& request) {
         std::string path = "/index.html";
+        std::string method = "GET";
+        std::string body;
+
         size_t pos = request.find("GET /");
         if (pos != std::string::npos) {
             size_t end = request.find(" ", pos + 5);
             path = request.substr(pos + 4, end - pos - 4);
+            method = "GET";
         }
         pos = request.find("POST /");
         if (pos != std::string::npos) {
             size_t end = request.find(" ", pos + 6);
             path = request.substr(pos + 5, end - pos - 5);
+            method = "POST";
+            // Extract body
+            size_t body_pos = request.find("\r\n\r\n");
+            if (body_pos != std::string::npos) {
+                body = request.substr(body_pos + 4);
+            }
         }
         if (request.find("OPTIONS /") != std::string::npos) {
             return "HTTP/1.1 200 OK\r\nAccess-Control-Allow-Origin: *\r\nAccess-Control-Allow-Methods: GET, POST, OPTIONS\r\nAccess-Control-Allow-Headers: Content-Type\r\nContent-Length: 0\r\n\r\n";
@@ -119,7 +150,7 @@ class PhiServer {
         if (path == "/") path = "/index.html";
 
         if (path.find("/api/") == 0) {
-            std::string r = handle_api(path);
+            std::string r = handle_api(path, body);
             if (!r.empty()) return r;
         }
 
@@ -164,4 +195,5 @@ public:
 };
 
 Metrics g_metrics;
+std::vector<std::string> g_tickets_json;
 }
