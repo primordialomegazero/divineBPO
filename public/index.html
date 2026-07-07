@@ -3,45 +3,47 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Divine BPO</title>
+  <title>Divine BPO — Enterprise</title>
   <link rel="stylesheet" href="css/phi.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='14' font-size='14'>Φ</text></svg>">
 </head>
 <body>
 
 <div class="grid">
-  
+
   <!-- SIDEBAR -->
   <aside class="sidebar">
     <div class="logo">DIVINE<span>BPO</span></div>
     <nav class="nav">
-      <a href="#" class="active">Overview</a>
-      <a href="#">Tickets</a>
-      <a href="#">Analytics</a>
-      <a href="#">Modules</a>
-      <a href="#">Settings</a>
+      <a href="#" class="active">📊 Overview</a>
+      <a href="#">🎫 Tickets</a>
+      <a href="#">📈 Analytics</a>
+      <a href="#">🧩 Modules</a>
+      <a href="#">🔐 FHE</a>
+      <a href="#">⚙️ Settings</a>
     </nav>
     <div class="phi-indicator" style="margin-top: auto;">
       <span class="phi-dot"></span>
-      SYSTEM OPERATIONAL
+      <span id="system-status">SYSTEM OPERATIONAL</span>
     </div>
   </aside>
-  
+
   <!-- MAIN -->
   <main class="main">
-    <div class="header">Overview</div>
-    <div class="subheader">Real-time BPO metrics. AI-driven. Human-verified.</div>
-    
+    <div class="header">Enterprise Overview</div>
+    <div class="subheader">Real-time BPO metrics. AI-driven. Human-verified. φ-harmonic.</div>
+
     <!-- METRICS -->
     <div class="metric-row">
       <div class="metric">
-        <div class="metric-label">Lambda</div>
+        <div class="metric-label">Lambda (λ)</div>
         <div class="metric-value" id="metric-lambda">0.4812</div>
-        <div class="metric-phi">Target: ln(phi)</div>
+        <div class="metric-phi">Chaos Stability Index</div>
       </div>
       <div class="metric">
-        <div class="metric-label">Phi</div>
+        <div class="metric-label">Phi (φ)</div>
         <div class="metric-value" id="metric-phi">1.6180</div>
-        <div class="metric-phi">Golden Ratio</div>
+        <div class="metric-phi">Golden Ratio Constant</div>
       </div>
       <div class="metric">
         <div class="metric-label">Active Modules</div>
@@ -49,31 +51,55 @@
         <div class="metric-phi">Customer Support, Tech, Healthcare...</div>
       </div>
     </div>
-    
-    <!-- CARDS -->
+
+    <!-- STAT CARDS -->
     <div class="cards">
-      <div class="card" id="card-total">
+      <div class="card">
         <div class="card-label">Total Tickets</div>
-        <div class="card-value">10</div>
+        <div class="card-value" id="card-total-value" style="color: var(--blue);">0</div>
         <div class="card-sub">Across all modules</div>
       </div>
-      <div class="card" id="card-ai">
+      <div class="card">
         <div class="card-label">AI Handled</div>
-        <div class="card-value">7</div>
+        <div class="card-value" id="card-ai-value" style="color: var(--green);">0</div>
         <div class="card-sub">Fully automated</div>
       </div>
-      <div class="card" id="card-human">
+      <div class="card">
         <div class="card-label">Human Escalated</div>
-        <div class="card-value">3</div>
+        <div class="card-value" id="card-human-value" style="color: var(--accent);">0</div>
         <div class="card-sub">Complex cases only</div>
       </div>
-      <div class="card" id="card-rate">
+      <div class="card">
         <div class="card-label">AI Rate</div>
-        <div class="card-value">70%</div>
-        <div class="card-sub">phi-target: 90%</div>
+        <div class="card-value" id="card-rate-value" style="color: var(--green);">0%</div>
+        <div class="card-sub">Target: 90%</div>
       </div>
     </div>
-    
+
+    <!-- INFRASTRUCTURE STATUS -->
+    <div class="infra-row">
+      <div class="infra-item">
+        <div class="infra-name">Redis</div>
+        <div class="infra-status infra-down" id="infra-redis">DOWN</div>
+      </div>
+      <div class="infra-item">
+        <div class="infra-name">RabbitMQ</div>
+        <div class="infra-status infra-down" id="infra-rabbitmq">DOWN</div>
+      </div>
+      <div class="infra-item">
+        <div class="infra-name">Swarm</div>
+        <div class="infra-status infra-down" id="infra-swarm">0 cores</div>
+      </div>
+      <div class="infra-item">
+        <div class="infra-name">GRC Chain</div>
+        <div class="infra-status" id="infra-grc" style="color: var(--blue);">0 blocks</div>
+      </div>
+      <div class="infra-item">
+        <div class="infra-name">Uptime</div>
+        <div class="infra-status" id="infra-uptime" style="color: var(--text);">0s</div>
+      </div>
+    </div>
+
     <!-- TICKETS TABLE -->
     <div class="table-container">
       <div class="table-header">
@@ -84,39 +110,36 @@
         <div>Status</div>
       </div>
       <div id="ticket-table">
-        <div class="table-row">
-          <div>TKT-1</div><div>customer_support</div>
-          <div>Order #12345</div>
-          <div><span class="status status-human">HUMAN</span></div>
-          <div><span class="status status-open">OPEN</span></div>
-        </div>
-        <div class="table-row">
-          <div>TKT-2</div><div>tech_support</div>
-          <div>Login issue</div>
-          <div><span class="status status-ai">AI</span></div>
-          <div><span class="status status-ai">CLOSED</span></div>
-        </div>
-        <div class="table-row">
-          <div>TKT-3</div><div>healthcare</div>
-          <div>Reschedule appointment</div>
-          <div><span class="status status-ai">AI</span></div>
-          <div><span class="status status-ai">CLOSED</span></div>
-        </div>
-        <div class="table-row">
-          <div>TKT-4</div><div>finance</div>
-          <div>Incorrect charge</div>
-          <div><span class="status status-human">HUMAN</span></div>
-          <div><span class="status status-open">OPEN</span></div>
-        </div>
-        <div class="table-row">
-          <div>TKT-5</div><div>hr</div>
-          <div>PTO request</div>
-          <div><span class="status status-human">HUMAN</span></div>
-          <div><span class="status status-open">OPEN</span></div>
-        </div>
+        <div class="table-row"><div>TKT-01</div><div>customer_support</div><div>Order #12345</div><div><span class="status-human">HUMAN</span></div><div><span class="status-open">OPEN</span></div></div>
+        <div class="table-row"><div>TKT-02</div><div>tech_support</div><div>Login issue</div><div><span class="status-ai">AI</span></div><div><span class="status-closed">CLOSED</span></div></div>
+        <div class="table-row"><div>TKT-03</div><div>healthcare</div><div>Reschedule appointment</div><div><span class="status-ai">AI</span></div><div><span class="status-closed">CLOSED</span></div></div>
+        <div class="table-row"><div>TKT-04</div><div>finance</div><div>Incorrect charge</div><div><span class="status-human">HUMAN</span></div><div><span class="status-open">OPEN</span></div></div>
+        <div class="table-row"><div>TKT-05</div><div>hr</div><div>PTO request</div><div><span class="status-human">HUMAN</span></div><div><span class="status-open">OPEN</span></div></div>
+        <div class="table-row"><div>TKT-06</div><div>sales</div><div>Product inquiry</div><div><span class="status-ai">AI</span></div><div><span class="status-closed">CLOSED</span></div></div>
+        <div class="table-row"><div>TKT-07</div><div>billing</div><div>Invoice question</div><div><span class="status-ai">AI</span></div><div><span class="status-closed">CLOSED</span></div></div>
+        <div class="table-row"><div>TKT-08</div><div>tech_support</div><div>VPN not connecting</div><div><span class="status-ai">AI</span></div><div><span class="status-closed">CLOSED</span></div></div>
       </div>
     </div>
-    
+
+    <!-- DB STATS CARD -->
+    <div class="cards" style="margin-top: 24px; grid-template-columns: repeat(3, 1fr);">
+      <div class="card">
+        <div class="card-label">Database Tickets</div>
+        <div class="card-value" id="card-db-value" style="color: var(--accent2);">0</div>
+        <div class="card-sub">Persisted in SQLite</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Backups</div>
+        <div class="card-value" id="infra-backups" style="color: var(--green);">6 saved</div>
+        <div class="card-sub">Auto-created</div>
+      </div>
+      <div class="card">
+        <div class="card-label">FHE Status</div>
+        <div class="card-value" style="color: var(--blue); font-size: 20px;">BFV Active</div>
+        <div class="card-sub">146-bit noise budget</div>
+      </div>
+    </div>
+
   </main>
 </div>
 
