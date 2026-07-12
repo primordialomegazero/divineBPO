@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Divine BPO - Live Dashboard</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Segoe UI', monospace; background: #0a0a1a; color: #e0e0e0; }
+.header { background: #0d0d2b; padding: 20px; border-bottom: 2px solid #1a1a4a; display: flex; justify-content: space-between; align-items: center; }
+.header h1 { color: #00cc88; font-size: 24px; }
+.header .status { color: #00cc88; }
+.grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; padding: 20px; }
+.card { background: #111133; border: 1px solid #1a1a4a; border-radius: 8px; padding: 20px; }
+.card h3 { color: #8888cc; font-size: 12px; text-transform: uppercase; margin-bottom: 10px; }
+.card .value { color: #00cc88; font-size: 32px; font-weight: bold; }
+.card .sub { color: #666688; font-size: 12px; margin-top: 5px; }
+.full-width { grid-column: span 2; }
+table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+th { text-align: left; color: #8888cc; font-size: 11px; padding: 8px; border-bottom: 1px solid #1a1a4a; }
+td { padding: 8px; font-size: 13px; border-bottom: 1px solid #0d0d2b; }
+.priority-Critical { color: #ff4444; }
+.priority-High { color: #ff8844; }
+.priority-Medium { color: #ffcc44; }
+.priority-Low { color: #44cc44; }
+.form-group { margin-bottom: 15px; }
+.form-group input, .form-group select { width: 100%; padding: 10px; background: #0a0a1a; border: 1px solid #1a1a4a; color: #e0e0e0; border-radius: 5px; }
+.btn { padding: 10px 20px; background: #00cc88; color: #0a0a1a; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%; }
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+.live { animation: pulse 2s infinite; color: #00cc88; }
+</style>
+</head>
+<body>
+<div class="header">
+    <div>
+        <h1>Divine BPO</h1>
+        <div style="color:#8888cc;font-size:12px;">Production Dashboard v23.3</div>
+    </div>
+    <div class="status"><span class="live">●</span> LIVE</div>
+</div>
+
+<div class="grid">
+    <div class="card">
+        <h3>Total Tickets</h3>
+        <div class="value" id="total-tickets">-</div>
+        <div class="sub">Loading...</div>
+    </div>
+    <div class="card">
+        <h3>Queue Waiting</h3>
+        <div class="value" id="queue-waiting">-</div>
+        <div class="sub">Max: 500</div>
+    </div>
+    <div class="card">
+        <h3>New Ticket</h3>
+        <div class="form-group"><input id="customer" placeholder="Customer name"></div>
+        <div class="form-group"><input id="issue" placeholder="Issue description"></div>
+        <div class="form-group">
+            <select id="priority">
+                <option>Medium</option><option>Low</option><option>High</option><option>Critical</option>
+            </select>
+        </div>
+        <button class="btn" onclick="createTicket()">Create Ticket</button>
+    </div>
+    <div class="card">
+        <h3>Agents Online</h3>
+        <div class="value" id="agents-online">-</div>
+        <div class="sub">Real-time</div>
+    </div>
+    
+    <div class="card full-width">
+        <h3>Recent Tickets</h3>
+        <table>
+            <thead><tr><th>ID</th><th>Customer</th><th>Issue</th><th>Priority</th><th>Status</th><th>Agent</th></tr></thead>
+            <tbody id="ticket-table"></tbody>
+        </table>
+    </div>
+    
+    <div class="card full-width">
+        <h3>Agents</h3>
+        <table>
+            <thead><tr><th>Agent</th><th>Calls</th><th>Satisfaction</th><th>Status</th></tr></thead>
+            <tbody id="agent-table"></tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+async function loadData() {
+    try {
+        const tickets = await fetch('/api/tickets').then(r => r.json());
+        const queue = await fetch('/api/queue').then(r => r.json());
+        const agents = await fetch('/api/agents').then(r => r.json());
+        
+        document.getElementById('total-tickets').textContent = tickets.total;
+        document.getElementById('queue-waiting').textContent = queue.queue.waiting;
+        document.getElementById('agents-online').textContent = queue.agents.online;
+        
+        let ticketHTML = '';
+        tickets.tickets.forEach(t => {
+            ticketHTML += '<tr><td>'+t.id+'</td><td>'+t.customer+'</td><td>'+t.issue+'</td>'+
+                '<td class="priority-'+t.priority+'">'+t.priority+'</td>'+
+                '<td>'+t.status+'</td><td>'+(t.agent||'Unassigned')+'</td></tr>';
+        });
+        document.getElementById('ticket-table').innerHTML = ticketHTML;
+        
+        let agentHTML = '';
+        agents.agents.forEach(a => {
+            agentHTML += '<tr><td>'+a.name+'</td><td>'+a.calls+'</td><td>'+a.satisfaction+'%</td>'+
+                '<td>'+a.status+'</td></tr>';
+        });
+        document.getElementById('agent-table').innerHTML = agentHTML;
+    } catch(e) {}
+}
+function createTicket() {
+    const customer = document.getElementById('customer').value;
+    const issue = document.getElementById('issue').value;
+    const priority = document.getElementById('priority').value;
+    fetch('/api/ticket', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({customer, issue, priority})
+    }).then(r => r.json()).then(data => {
+        alert('Ticket ' + data.id + ' created!');
+        loadData();
+    });
+}
+setInterval(loadData, 5000);
+loadData();
+</script>
+</body>
+</html>

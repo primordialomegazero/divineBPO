@@ -167,3 +167,29 @@
 [2026-07-08 01:21:57.560] [INFO ] Call Queue: 500 max, priority-based
 [2026-07-08 01:21:57.560] [INFO ] Languages: EN, ES, FR, JA, TL
 [2026-07-08 01:21:57.560] [INFO ] PQC: Kyber1024
+[2026-07-09 12:38:01.220] [INFO ] ══════ DIVINE BPO v23.2 — AGI VOICE (TWILIO LIVE) ══════
+[2026-07-09 12:38:01.233] [INFO ] ThreadPool: 48 workers
+[2026-07-09 12:38:01.265] [INFO ] DB Pool: 8 connections | 76 tickets
+[2026-07-09 12:38:01.409] [INFO ] Cache: Redis
+[2026-07-09 12:38:01.409] [INFO ] Rate Limit: 100 req/s/IP
+[2026-07-09 12:38:01.409] [INFO ] Voice: Twilio ready
+[2026-07-09 12:38:01.409] [INFO ] Call Queue: 500 max | Priority-based
+[2026-07-09 12:38:01.409] [INFO ] I18N: EN/ES/FR/JA/TL ready
+[2026-07-09 12:38:07.655] [INFO ] ══════ AGI VOICE READY ══════
+[2026-07-09 12:38:07.655] [INFO ] Dashboard: http://localhost:8092
+[2026-07-09 12:38:07.655] [INFO ] Voice Webhook: http://localhost:8092/api/voice/incoming
+[2026-07-09 12:38:07.656] [INFO ] Call Queue: 500 max, priority-based
+[2026-07-09 12:38:07.656] [INFO ] Languages: EN, ES, FR, JA, TL
+[2026-07-09 12:38:07.656] [INFO ] PQC: Kyber1024
+[2026-07-09 12:45:41.162] [INFO ] ══════ DIVINE BPO v20.0 — PRODUCTION FINAL ══════
+[2026-07-09 12:45:41.270] [INFO ] Existing backups found — system recovered from previous run
+[2026-07-09 12:50:17.744] [WARN ] RabbitMQ unavailable — using synchronous processing
+[2026-07-09 12:50:17.843] [INFO ] ══════ PROCESSING 8 TICKETS ══════
+[2026-07-09 12:50:20.488] [INFO ] ══════ PRODUCTION READY ══════
+[2026-07-09 12:50:20.488] [INFO ] Tickets: 0 | AI: 0 | Human: 0 | Skipped: 0
+[2026-07-09 12:50:20.488] [INFO ] DB: 76 tickets | GRC: 1 blocks | Backups: 6
+[2026-07-09 12:50:20.488] [INFO ] Redis: CONNECTED
+[2026-07-09 12:50:20.489] [INFO ] RabbitMQ: FALLBACK
+[2026-07-09 12:50:20.489] [INFO ] Dashboard: http://localhost:8092
+[2026-07-09 12:50:20.774] [INFO ] ══════ GRACEFUL SHUTDOWN ══════
+[2026-07-09 12:50:20.812] [INFO ] All data persisted. Backups saved. Goodbye.
